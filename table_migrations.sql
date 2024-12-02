@@ -58,3 +58,24 @@ VALUES
 
 SELECT * FROM event;
 SELECT * FROM location;
+
+-- This script only contains the table creation statements and does not fully represent the table in the database. Do not use it as a backup.
+
+-- Sequence and defined type
+CREATE SEQUENCE IF NOT EXISTS category_id_seq;
+
+-- Table Definition
+CREATE TABLE "public"."category" (
+                                     "id" int8 NOT NULL DEFAULT nextval('category_id_seq'::regclass),
+                                     "name" varchar(255) NOT NULL,
+                                     "description" varchar(255),
+                                     PRIMARY KEY ("id")
+);
+
+INSERT INTO "public"."category" (name, description)
+VALUES
+    ('Rock', 'Rock music concerts and events'),
+    ('Pop', 'Pop music concerts and events'),
+    ('Jazz', 'Jazz music concerts and events'),
+    ('Classical', 'Classical music concerts and events'),
+    ('Electronic', 'Electronic music concerts and events');
