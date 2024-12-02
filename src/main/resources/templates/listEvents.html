@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Booking page - Welcome and choose an Event</title>
+  <style type="text/css">
+    body {
+      width: 800px;
+      margin: auto;
+    }
+    .like-button {
+      display: inline-block;
+      padding: 5px 15px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    .like-button[disabled] {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .event-actions {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Welcome to our Event Booking App</h1>
+</header>
+<main>
+  <script>
+    function setEventName(eventName) {
+      document.getElementById('hiddenEventName').value = eventName.getAttribute('data-event-name');
+    }
+  </script>
+
+  <form th:action="@{/events}" th:method="GET">
+    <h3>Search Events</h3>
+    <label for="searchText">Event Name:</label>
+    <input type="text" id="searchText" name="searchText" th:value="${searchText}">
+    <label for="minRating">Minimum Rating:</label>
+    <input type="number" id="minRating" name="minRating" min="0" max="10" step="0.1" th:value="${minRating}">
+    <label for="locationId">Filter by Location:</label>
+    <select id="locationId" name="locationId">
+      <option value="">All Locations</option>
+      <option th:each="location : ${locations}"
+              th:value="${location.id}"
+              th:text="${location.name}"
+              th:selected="${selectedLocationId != null && selectedLocationId == location.id}">
+      </option>
+    </select>
+    <input type="submit" value="Search Events">
+  </form>
+
+  <div>
+    <a href="/events/add">Add new Event</a>
+  </div>
+
+  <form th:action="@{/events}" th:method="GET">
+    <h3>Search Bookings</h3>
+    <label for="attendeeSearch">Attendee Name:</label>
+    <input type="text" id="attendeeSearch" name="attendeeSearch" th:value="${attendeeSearch}">
+    <input type="submit" value="Search Bookings">
+  </form>
+
+  <h2>Choose an event:</h2>
+  <th:block th:each="event : ${events}">
+    <div class="event-item">
+      <label>
+        <input type="radio" name="eventName" th:value="${event.name}" required
+               th:data-event-name="${event.name}" onclick="setEventName(this)">
+        Name: <span th:text="${event.name}"></span>,
+        Description: <span th:text="${event.description}"></span>,
+        Rating: <span th:text="${event.popularityScore}"></span>,
+        Location: <span th:text="${event.location.name}"></span>
+      </label>
+
+      <div class="event-actions">
+        <a th:href="@{'/events/{id}/edit' (id=${event.id})}">
+          <button type="button">Edit Event</button>
+        </a>
+
+        <form th:method="POST" style="display: inline-block"
+              th:action="@{'/events/{id}/delete'(id=${event.id})}">
+          <button type="submit">Delete</button>
+        </form>
+
+        <form th:method="POST" style="display: inline-block"
+              th:action="@{'/events/{id}/like'(id=${event.id})}">
+          <button type="submit"
+                  class="like-button"
+                  th:disabled="${event.liked}"
+                  th:text="${event.liked ? 'Liked!' : 'Like'}">
+            Like
+          </button>
+        </form>
+      </div>
+      <br>
+    </div>
+  </th:block>
+
+  <div>
+    <form th:action="@{/eventBooking}" th:method="POST">
+      <h2>Choose number of tickets:</h2>
+      <input type="hidden" id="hiddenEventName" name="eventName">
+      <input type="number" name="numTickets" min="1" max="10" required><br/>
+      <br/>
+
+      <h2>Your Information:</h2>
+      <label for="attendeeName">Name:</label>
+      <input type="text" id="attendeeName" name="attendeeName" required><br>
+
+      <label for="attendeeAddress">Address:</label>
+      <input type="text" id="attendeeAddress" name="attendeeAddress" required><br>
+      <br/>
+      <br/>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
+  <h2>Current Bookings</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Event Name</th>
+      <th>Attendee Name</th>
+      <th>Address</th>
+      <th>Number of Tickets</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="booking : ${bookings}">
+      <td th:text="${booking.eventName}"></td>
+      <td th:text="${booking.attendeeName}"></td>
+      <td th:text="${booking.attendeeAddress}"></td>
+      <td th:text="${booking.numberOfTickets}"></td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>
