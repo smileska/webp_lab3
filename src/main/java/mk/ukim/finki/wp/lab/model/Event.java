@@ -3,6 +3,8 @@ package mk.ukim.finki.wp.lab.model;
 import lombok.Data;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 @Entity
@@ -18,6 +20,10 @@ public class Event {
 
     @ManyToOne
     private Location location;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }
 
