@@ -74,6 +74,7 @@
         Description: <span th:text="${event.description}"></span>,
         Rating: <span th:text="${event.popularityScore}"></span>,
         Location: <span th:text="${event.location.name}"></span>
+        Category: <span th:text="${event.category != null ? event.category.name : 'Uncategorized'}"></span>
       </label>
 
       <div class="event-actions">

@@ -1,6 +1,7 @@
 package mk.ukim.finki.wp.lab.web.controller;
 import mk.ukim.finki.wp.lab.model.Event;
 import mk.ukim.finki.wp.lab.model.EventBooking;
+import mk.ukim.finki.wp.lab.service.CategoryService;
 import mk.ukim.finki.wp.lab.service.EventBookingService;
 import mk.ukim.finki.wp.lab.service.EventService;
 import mk.ukim.finki.wp.lab.service.LocationService;
@@ -19,11 +20,13 @@ public class EventController {
     private final EventService eventService;
     private final LocationService locationService;
     private final EventBookingService eventBookingService;
+    private final CategoryService categoryService;
 
-    public EventController(EventService eventService, LocationService locationService, EventBookingService eventBookingService) {
+    public EventController(EventService eventService, LocationService locationService, EventBookingService eventBookingService, CategoryService categoryService) {
         this.eventService = eventService;
         this.locationService = locationService;
         this.eventBookingService = eventBookingService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -55,6 +58,8 @@ public class EventController {
     public String showAddEventForm(Model model) {
         model.addAttribute("locations", locationService.findAll());
         model.addAttribute("event", new Event());
+
+        model.addAttribute("categories", categoryService.findAll());
         return "addEvent";
     }
 
@@ -64,6 +69,8 @@ public class EventController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid event ID:" + id));
         model.addAttribute("event", event);
         model.addAttribute("locations", locationService.findAll());
+
+        model.addAttribute("categories", categoryService.findAll());
         return "addEvent";
     }
     @GetMapping("/edit/{eventId}")
@@ -88,15 +95,17 @@ public class EventController {
             @RequestParam String name,
             @RequestParam String description,
             @RequestParam Double popularityScore,
-            @RequestParam Long locationId) {
+            @RequestParam Long locationId,
+            @RequestParam Long categoryId) {
 
         if (id == null) {
-            eventService.save(name, description, popularityScore, locationId);
+            eventService.save(name, description, popularityScore, locationId, categoryId);
         } else {
-            eventService.update(id, name, description, popularityScore, locationId);
+            eventService.update(id, name, description, popularityScore, locationId, categoryId);
         }
         return "redirect:/events";
     }
+
     @PostMapping("/{id}/delete")
     public String deleteEvent(@PathVariable Long id) {
         eventService.delete(id);

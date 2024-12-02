@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Add New Category</title>
+</head>
+<body>
+<h1>Add New Category</h1>
+
+<!-- Add debugging information -->
+<div th:if="${error}" style="color: red;" th:text="${error}"></div>
+
+<form th:action="@{/categories/save}" method="post">
+  <!-- Remove the hidden id field for new categories -->
+
+  <div>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required/>
+  </div>
+
+  <div>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required></textarea>
+  </div>
+
+  <div>
+    <button type="submit">Save Category</button>
+    <a th:href="@{/categories}">Back to categories</a>
+  </div>
+</form>
+
+<!-- Add form debugging -->
+<script>
+  document.querySelector('form').addEventListener('submit', function(e) {
+    console.log('Form submitted with:');
+    console.log('Name:', document.getElementById('name').value);
+    console.log('Description:', document.getElementById('description').value);
+  });
+</script>
+</body>
+</html>

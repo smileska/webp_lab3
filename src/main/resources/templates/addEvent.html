@@ -36,6 +36,17 @@
             </option>
         </select>
     </div>
+    <div>
+        <label for="category">Category</label>
+        <select id="category" name="categoryId" required>
+            <option value="">Select a category</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.id}"
+                    th:text="${category.name}"
+                    th:selected="${event.category != null && event.category.id == category.id}">
+            </option>
+        </select>
+    </div>
 
     <div>
         <button type="submit">Save Event</button>
