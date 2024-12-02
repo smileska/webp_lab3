@@ -9,7 +9,6 @@ import java.util.List;
 
 @Service
 public class EventBookingServiceImpl implements EventBookingService {
-
     private final BookingRepository bookingRepository;
 
     public EventBookingServiceImpl(BookingRepository bookingRepository) {
@@ -36,6 +35,7 @@ public class EventBookingServiceImpl implements EventBookingService {
     public List<EventBooking> getBookingsByAttendeeName(String attendeeName) {
         return bookingRepository.findByAttendeeName(attendeeName);
     }
+
     @Override
     public List<EventBooking> searchBookings(String attendeeName) {
         if (attendeeName == null || attendeeName.isEmpty()) {
