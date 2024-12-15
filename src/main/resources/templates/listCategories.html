@@ -1,9 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <title>Categories</title>
 </head>
 <body>
+<header>
+  <div>
+    <div sec:authorize="!isAuthenticated()">
+      <a href="/login">Login</a>
+    </div>
+    <div sec:authorize="isAuthenticated()">
+      <span>Welcome, <span sec:authentication="name"></span>!</span>
+      <form th:action="@{/logout}" method="post" style="display: inline;">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</header>
+
 <h1>Categories</h1>
 
 <div>
@@ -13,7 +28,7 @@
   </form>
 </div>
 
-<div>
+<div sec:authorize="hasRole('ADMIN')">
   <a th:href="@{/categories/add}" class="btn">Add New Category</a>
 </div>
 
@@ -22,14 +37,14 @@
   <tr>
     <th>Name</th>
     <th>Description</th>
-    <th>Actions</th>
+    <th sec:authorize="hasRole('ADMIN')">Actions</th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="category : ${categories}">
     <td th:text="${category.name}"></td>
     <td th:text="${category.description}"></td>
-    <td>
+    <td sec:authorize="hasRole('ADMIN')">
       <a th:href="@{/categories/{id}/edit(id=${category.id})}">Edit</a>
       <form th:action="@{/categories/{id}/delete(id=${category.id})}" method="post" style="display: inline;">
         <button type="submit">Delete</button>
@@ -38,5 +53,9 @@
   </tr>
   </tbody>
 </table>
+
+<div>
+  <a href="/events">Back to Events</a>
+</div>
 </body>
 </html>
