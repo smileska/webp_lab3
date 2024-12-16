@@ -23,9 +23,7 @@ public class SecurityConfig {
                         .requestMatchers("/events/add", "/events/*/edit", "/events/*/delete",
                                 "/categories/add", "/categories/*/edit", "/categories/*/delete")
                         .hasRole("ADMIN")
-                        .requestMatchers("/", "/events", "/categories", "/eventBooking/**",
-                                "/h2-console/**")
-                        .permitAll()
+                        .requestMatchers("/login", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -37,7 +35,7 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/events")
+                        .logoutSuccessUrl("/login")
                         .permitAll()
                 );
 
@@ -58,7 +56,13 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin);
+        UserDetails user = User.builder()
+                .username("user")
+                .password(passwordEncoder().encode("user"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
     @Bean
